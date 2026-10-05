@@ -1,0 +1,34 @@
+services:
+  web:
+    build: ./app
+    image: ${DOCKERHUB_USER}/counter-app:${IMAGE_TAG}
+    environment:
+      - REDIS_HOST=db-service
+      - REDIS_PORT=${REDIS_PORT}
+      - APP_PORT=${APP_PORT}
+    ports:
+      - "${WEB_PORTS}:${APP_PORT}"
+    networks:
+      - app-network
+    depends_on:
+      - db-service
+    restart: unless-stopped
+
+  db-service:
+    image: redis:7-alpine
+    command: ["redis-server", "--appendonly", "yes"]
+    container_name: db-service
+    volumes:
+      - redis-data:/data
+    networks:
+      - app-network
+    restart: unless-stopped
+
+networks:
+  app-network:
+    name: app-network
+    driver: bridge
+
+volumes:
+  redis-data:
+    name: redis-data

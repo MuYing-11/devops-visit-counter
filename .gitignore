@@ -1,0 +1,6 @@
+jenkins/.env
+__pycache__/
+.pytest_cache/
+.venv/
+app/report.xml
+screenshots/
