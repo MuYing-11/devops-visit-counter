@@ -1,27 +1,27 @@
-# 1) Base image: python:3.12-alpine (~50 MB) instead of python:3.12 (~1 GB)
+# 1) Image de base : python:3.12-alpine (~21 Mo) au lieu de python:3.12 (~1 Go)
 FROM python:3.12-alpine
 
-# 2) Do not write .pyc files and print logs immediately
+# 2) Pas de fichiers .pyc et logs affiches directement
 ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1
 
 WORKDIR /app
 
-# 3) Create a normal user so the app does not run as root
+# 3) Utilisateur sans privileges : l'application ne tourne pas en root
 RUN addgroup -S appgroup && adduser -S appuser -G appgroup
 
-# 4) Copy requirements first: this layer stays in cache
-#    as long as requirements.txt does not change
+# 4) Les dependances d'abord : cette couche reste en cache
+#    tant que requirements.txt ne change pas
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-# 5) Copy the source code last (it changes often)
+# 5) Le code source en dernier (c'est lui qui change souvent)
 COPY app.py .
 
-# 6) Switch to the non-root user
+# 6) On passe a l'utilisateur non-root
 USER appuser
 
 EXPOSE 5000
 
-# 7) Command executed when the container starts
+# 7) Commande lancee au demarrage du conteneur
 CMD ["python", "app.py"]
