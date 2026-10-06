@@ -9,7 +9,7 @@ COPY --from=docker:cli /usr/local/bin/docker /usr/local/bin/docker
 
 USER jenkins
 RUN jenkins-plugin-cli --plugins git workflow-aggregator junit credentials-binding \
-    configuration-as-code job-dsl
+    configuration-as-code job-dsl pipeline-graph-view
 
 # Configuration as code: admin user, Docker Hub credentials and the pipeline job
 COPY casc.yaml /usr/share/jenkins/ref/casc.yaml
